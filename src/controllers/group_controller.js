@@ -106,7 +106,7 @@ const group = async (request, response) => {
 
 const edit_name_group = async (request,response) => {
     const { group_name } = request.body;
-    const { id_group } = request.params;z
+    const { id_group } = request.params;
     await Group.findByIdAndUpdate(id_group,{name:group_name});
     request.flash("success",[true]);
     request.flash("messages",["Nombre de grupo modificado exitosamente"]);
