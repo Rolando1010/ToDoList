@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grupos de <%= user.username %>  | ToDoList</title>
+    <%- include("../components/head.html") %>
+</head>
+<body>
+    <%- include("../components/menu.html") %>
+
+    <%- include("../components/messages.html") %>
+
+    <% if (groups.length === 0) { %>
+        <div class="container-info rounded mx-auto">
+            <h2 class="title">Aún no tienes grupos registrados</h2>
+            <button data-bs-toggle="modal" data-bs-target="#create-group" class="btn button">Crear un grupo</button>
+            <button data-bs-toggle="modal" data-bs-target="#join-group" class="btn button">Únete a un grupo</button>
+        </div>
+    <% } else { %>
+        <div class="row g-0 groups-container">
+            <div class="col-md-4 mx-auto group-container text-center">
+                <div class="group-data">
+                    <div>
+                        <button data-bs-toggle="modal" data-bs-target="#create-group" class="btn button fs-15 mv-20">Crear un grupo</button>
+                    </div>
+                    <div>
+                        <button data-bs-toggle="modal" data-bs-target="#join-group" class="btn button fs-15 mv-20">Únete a un grupo</button>
+                    </div>
+                </div>
+            </div>
+            <% for(group of groups){ %>
+                <div class="col-md-4 mx-auto group-container">
+                    <div class="group-data">
+                        <h4><%= group.name %></h4>
+                        <p>Código: <%= group.code %> </p>
+                        <p>Creado por <%= group.name_creator %> el <%= group.creation_date %></p>
+                        <p><%= group.cant_members %> miembro<%= group.cant_members==1 ? "" : "s" %></p>
+                        <a href="/grupos/<%= group.code %>" class="btn button fs-15">Ver grupo</a>
+                    </div>
+                </div> 
+            <% } %>
+        </div>
+    <% } %>
+
+    <div class="modal fade" id="create-group">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header">
+                    <h5 class="modal-title" id="exampleModalLabel">Creación de Grupo</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/groups/add" method="POST">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="col-form-label">Nombre de grupo:</label>
+                            <input type="text" class="form-control input" name="group_name" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn button fs-15">Crear Grupo</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="join-group">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header">
+                    <h5 class="modal-title" id="exampleModalLabel">Unión a Grupo</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/groups/join?_method=PUT" method="POST">
+                    <input type="hidden" name="_method" value="PUT"/>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="col-form-label">Código de grupo:</label>
+                            <input type="text" class="form-control input" name="code_group">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn button fs-15">Unirse</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

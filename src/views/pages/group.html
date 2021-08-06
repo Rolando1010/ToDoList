@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= group.name %> | Grupo</title>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <%- include("../components/head.html") %>
+</head>
+
+<body>
+    <%- include("../components/menu.html") %>
+
+    <%- include("../components/messages.html") %>
+
+    <ul class="nav nav-tabs options-group mx-auto" id="myTab" role="tablist">
+        <li class="nav-item mx-auto" role="presentation">
+            <button class="option-group<%= show_members || show_tasks ? "" : " active" %>" id="home-tab" data-bs-toggle="tab" data-bs-target="#group" type="button" role="tab" aria-controls="home" aria-selected="true">
+                <i class="fas fa-info-circle"></i>
+                <br/>
+                Grupo
+            </button>
+        </li>
+        <li class="nav-item mx-auto" role="presentation">
+            <button class="option-group<%= show_members ? " active" : "" %>" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">
+                <i class="fas fa-users"></i>
+                <br/>
+                Miembros
+            </button>
+        </li>
+        <li class="nav-item mx-auto" role="presentation">
+            <button class="option-group<%= show_tasks ? " active" : "" %>" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">
+                <i class="fas fa-tasks"></i>
+                <br/>
+                Tareas
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content mt-50" id="myTabContent">
+        <div class="tab-pane fade w-80 mx-auto<%= show_members || show_tasks ? "" : " show active" %>" id="group" role="tabpanel" aria-labelledby="home-tab">
+            <h4 class="title">Nombre de Grupo:</h4>
+            <h5 class="d-ib"><%= group.name %></h5>
+            <% if(String(user._id)===String(group.id_creator)) { %>
+                <h5 class="edit-name-group" title="Modificar Nombre" data-bs-toggle="modal" data-bs-target="#edit-name-group">
+                    <i class="fas fa-pencil-alt"></i>
+                </h5>
+            <% } %>
+            <div class="divider"></div>
+            <h4 class="title">Código:</h4>
+            <h5><%= group.code %></h5>
+            <div class="divider"></div>
+            <h4 class="title">Creado por:</h4>
+            <h5><%= group.name_creator %> - <%= group.email_creator %></h5>
+            <div class="divider"></div>
+            <h4 class="title">Fecha de creación:</h4>
+            <h5><%= group.creation_date %></h5>
+            <div class="divider"></div>
+            <h4 class="title">Número de miembros:</h4>
+            <h5><%= group.cant_members %></h5>
+            <div class="divider"></div>
+            <% if(String(user._id)===String(group.id_creator)) { %>
+                <h4 class="title">Eliminar el grupo:</h4>
+                <form action="/groups/<%= group.code %>/delete?_method=DELETE" method="POST">
+                    <input type="hidden" name="_method" value="DELETE"/>
+                    <button class="btn btn-red">Eliminar grupo</button>
+                </form>
+            <% } else { %>
+                <h4 class="title">Salir del grupo:</h4>
+                <form action="/groups/<%= group.code %>/exit?_method=PUT" method="POST">
+                    <input type="hidden" name="_method" value="PUT"/>
+                    <button class="btn btn-red">Salir del grupo</button>
+                </form>
+            <% } %>
+            <div class="divider"></div>
+        </div>
+        <div class="tab-pane fade w-80 mx-auto<%= show_members ? " show active" : "" %>" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <form action="/groups/<%= group.code %>/add_member?_method=PUT" method="POST">
+                <input type="hidden" name="_method" value="PUT"/>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Correo</span>
+                    <input type="email" class="form-control" placeholder="Ingrese el correo del usuario que quiera añadir" name="email_user" required/>
+                    <span class="input-group-text"><button class="btn button fs-15">Agregar Usuario</button></span>
+                </div>
+            </form>
+            <table class="table table-hover table-group-members text-center">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Correo</th>
+                        <% if(String(user._id)===String(group.id_creator)){ %>
+                            <th scope="col">Eliminar</th>
+                        <% } %>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(var i=0;i<group.members.length;i++){ %>
+                        <tr class="row-table-group-members">
+                            <th scope="row"><%= i+1 %></th>
+                            <td><%= group.members[i].username %></td>
+                            <td><%= group.members[i].email %></td>
+                            <% if(String(user._id)===String(group.id_creator)){ %>
+                                <td>
+                                    <% if(String(group.id_creator)!==String(group.members[i].id)){ %>
+                                        <form action="/groups/<%= group.code %>/delete_member/<%= group.members[i].id %>?_method=PUT" method="POST">
+                                            <input type="hidden" name="_method" value="PUY"/>
+                                            <button class="delete-member btn" title="Eliminar miembro de grupo">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    <% } %>
+                                </td>
+                            <% } %>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane fade w-80 mx-auto<%= show_tasks ? " show active" : "" %>" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+            <button class="btn button fs-15 ml-20" data-bs-toggle="modal" data-bs-target="#add-task">Agregar Tarea</button>
+            <div class="list-group container-tasks">
+                <% for (task of tasks_group){ %>
+                    <div class="list-group-item list-group-item-action container-task">
+                        <div class="row g-0">
+                            <div class="section-task col-md-6">
+                                <h4 class="title"><%= task.name %></h4>
+                                <h5><%= `Creado por: ${task.name_creator} - ${task.email_creator}` %></h5>
+                                <h5><%= task.done ? "Finalizada" : "Sin finalizar" %></h5>
+                            </div>
+                            <div class="section-task col-md-2">
+                                <p title="Fecha de creación"><%= task.creation_date %></p>
+                            </div>
+                            <div class="section-task col-md-4 text-center">
+                                <a href="/tareas/<%= task.id %>" class="btn button fs-15 mb-10">Ver</a>
+                                <button class="btn button fs-15 mb-10" data-bs-toggle="modal" data-bs-target="#edit-task-<%= task.id %>">Editar</button>
+                                <form class="d-ib" action="/tasks/<%= task.id %>/finish?_method=PUT" method="POST">
+                                    <input type="hidden" name="_method" value="PUT"/>
+                                    <button class="btn button fs-15 mb-10">Finalizar</button>
+                                </form>
+                                <form class="d-ib" action="/tasks/<%= task.id %>/delete?_method=DELETE" method="POST">
+                                    <input type="hidden" name="_method" value="DELETE"/>
+                                    <input type="hidden" name="group" value="<%= group.code %>">
+                                    <button class="btn btn-red fs-15 mb-10">Eliminar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <% if(String(user._id)===String(group.id_creator)) { %>
+        <div class="modal fade" id="edit-name-group">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modificación de Nombre de Grupo</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/groups/<%= group.code %>/edit-name?_method=PUT" method="POST">
+                        <input type="hidden" name="_method" value="PUT"/>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="col-form-label">Nombre de grupo:</label>
+                                <input type="text" class="form-control input" name="group_name" required value="<%= group.name %>">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn button fs-15">Modificar Nombre</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    <% } %>
+
+    <div class="modal fade" id="add-task">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header">
+                    <h5 class="modal-title" id="exampleModalLabel">Agregar Tarea</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/tasks/group/<%= group.code %>/add" method="POST">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="col-form-label">Nombre:</label>
+                            <input type="text" class="form-control input" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="col-form-label">Descripción:</label>
+                            <textarea type="text" class="form-control input" name="description" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn button fs-15">Agregar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

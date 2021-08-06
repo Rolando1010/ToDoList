@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingreso | ToDoList</title>
+    <%- include("../components/head.html") %>
+</head>
+
+<body>
+    <%- include("../components/menu.html") %>
+
+    <%- include("../components/messages.html") %>
+
+    <div class="container-form mx-auto">
+        <h2 class="title">Inicio de Sesión</h2>
+        <form action="/users/entry" method="POST">
+            <div class="mb-3 mt-30">
+                <label class="form-label">Correo electrónico</label>
+                <input type="email" class="form-control input" required name="email"/>
+            </div>
+            <div class="mb-3 mt-30">
+                <label class="form-label">Contraseña</label>
+                <input type="password" class="form-control input" required name="password"/>
+            </div>
+            <button class="btn button">Ingresar</button>
+        </form>
+    </div>
+</body>
+
+</html>

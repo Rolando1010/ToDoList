@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tareas de <%= user.username %> | ToDoList</title>
+    <%- include("../components/head.html") %>
+</head>
+
+<body>
+    <%- include("../components/menu.html") %>
+    <%- include("../components/messages.html") %>
+
+    <h2 class="title text-center mt-30">Tareas</h2>
+    <button class="btn button fs-15 ml-20" data-bs-toggle="modal" data-bs-target="#add-task">Agregar Tarea</button>
+    <div class="list-group container-tasks">
+        <% for (task of tasks_user){ %>
+            <div class="list-group-item list-group-item-action container-task">
+                <div class="row g-0">
+                    <div class="section-task col-md-6">
+                        <h4 class="title"><%= task.name %></h4>
+                        <h5><%= task.group_name ? `Grupo: ${task.group_name}` : "Personal" %></h5>
+                        <h5><%= task.done ? "Finalizada" : "Sin finalizar" %></h5>
+                    </div>
+                    <div class="section-task col-md-2">
+                        <p title="Fecha de creación"><%= task.creation_date %></p>
+                    </div>
+                    <div class="section-task col-md-4 text-center">
+                        <a href="/tareas/<%= task.id %>" class="btn button fs-15 mb-10">Ver</a>
+                        <button class="btn button fs-15 mb-10" data-bs-toggle="modal" data-bs-target="#edit-task-<%= task.id %>">Editar</button>
+                        <form class="d-ib" action="/tasks/<%= task.id %>/finish?_method=PUT" method="POST">
+                            <input type="hidden" name="_method" value="PUT"/>
+                            <button class="btn button fs-15 mb-10">Finalizar</button>
+                        </form>
+                        <form class="d-ib" action="/tasks/<%= task.id %>/delete?_method=DELETE" method="POST">
+                            <input type="hidden" name="_method" value="DELETE"/>
+                            <button class="btn btn-red fs-15 mb-10">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+    </div>
+
+    <div class="modal fade" id="add-task">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header">
+                    <h5 class="modal-title" id="exampleModalLabel">Agregar Tarea</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/tasks/personal/add" method="POST">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="col-form-label">Nombre:</label>
+                            <input type="text" class="form-control input" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="col-form-label">Descripción:</label>
+                            <textarea type="text" class="form-control input" name="description" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn button fs-15">Agregar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <% for(task of tasks_user){ %>
+        <div class="modal fade" id="edit-task-<%= task.id %>">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header header">
+                        <h5 class="modal-title" id="exampleModalLabel">Editar Tarea</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="/tasks/<%= task.id %>/edit?_method=PUT" method="POST">
+                        <input type="hidden" name="_method" value="PUT"/>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="col-form-label">Nombre:</label>
+                                <input type="text" class="form-control input" name="name" required value="<%= task.name %>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="col-form-label">Descripción:</label>
+                                <textarea type="text" class="form-control input" name="description" required><%= task.description %></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn button fs-15">Agregar</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    <% } %>
+</body>
+
+</html>

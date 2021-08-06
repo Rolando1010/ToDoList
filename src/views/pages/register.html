@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro | ToDoList</title>
+    <%- include("../components/head.html") %>
+</head>
+
+<body>
+    <%- include("../components/menu.html") %>
+    
+    <%- include("../components/messages.html") %>
+    
+    <div class="container-form mx-auto">
+        <h2 class="title">Registro de Usuario</h2>
+        <form action="/users/add" method="POST">
+            <div class="mb-3 mt-30">
+                <label class="form-label">Nombre de Usuario</label>
+                <input type="text" class="form-control input" required name="username"/>
+            </div>
+            <div class="mb-3 mt-30">
+                <label class="form-label">Correo electrónico</label>
+                <input type="email" class="form-control input" required name="email"/>
+            </div>
+            <div class="mb-3 mt-30">
+                <label class="form-label">Contraseña</label>
+                <input type="password" class="form-control input" required name="password"/>
+            </div>
+            <div class="mb-3 mt-30">
+                <label class="form-label">Confirmar Contraseña</label>
+                <input type="password" class="form-control input" required name="confirm_password"/>
+            </div>
+            <button class="btn button">Registrarse</button>
+        </form>
+    </div>
+</body>
+
+</html>

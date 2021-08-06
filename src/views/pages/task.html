@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= task.name %> | Tarea</title>
+    <%- include("../components/head.html") %>
+</head>
+<body>
+    <%- include("../components/menu.html") %>
+    <%- include("../components/messages.html") %>
+
+    <div class="container-info-task mx-auto">
+        <h2 class="title text-center">Tarea</h2>
+        <h4 class="title">Acciones:</h4>
+        <button class="btn button fs-15 mb-10" data-bs-toggle="modal" data-bs-target="#edit-task">Editar</button>
+        <form class="d-ib" action="/tasks/<%= task.id %>/finish?_method=PUT" method="POST">
+            <input type="hidden" name="_method" value="PUT"/>
+            <button class="btn button fs-15 mb-10">Finalizar</button>
+        </form>
+        <form class="d-ib" action="/tasks/<%= task.id %>/delete?_method=DELETE" method="POST">
+            <input type="hidden" name="_method" value="DELETE"/>
+            <button class="btn btn-red fs-15 mb-10">Eliminar</button>
+        </form>
+        <div class="mb--10"></div>
+        <div class="divider-blue"></div>
+        <h4 class="title">Nombre:</h4>
+        <h5><%= task.name %></h5>
+        <div class="divider-blue"></div>
+        <h4 class="title">Descripción:</h4>
+        <h5><%= task.description %></h5>
+        <div class="divider-blue"></div>
+        <h4 class="title">Estado:</h4>
+        <h5><%= task.done ? "Finalizada" : "Sin Finalizar" %></h5>
+        <div class="divider-blue"></div>
+        <h4 class="title">Grupo:</h4>
+        <h5 class="d-ib"><%= task.group ? task.group : "Sin grupo - Personal" %></h5>
+        <% if(task.group){ %>
+            <a href="/grupos/<%= task.id_group %>" class="btn button fs-15 ml-20">Ver grupo</a>
+        <% } %> 
+        <div class="divider-blue"></div>
+        <h4 class="title">Creado por:</h4>
+        <h5><%= task.creator %></h5>
+        <div class="divider-blue"></div>
+        <h4 class="title">Fecha de creación:</h4>
+        <h5><%= task.creation_date %></h5>
+        <div class="divider-blue"></div>
+    </div>
+
+    <div class="modal fade" id="edit-task">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header header">
+                    <h5 class="modal-title" id="exampleModalLabel">Editar Tarea</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/tasks/<%= task.id %>/edit?_method=PUT" method="POST">
+                    <input type="hidden" name="_method" value="PUT"/>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="col-form-label">Nombre:</label>
+                            <input type="text" class="form-control input" name="name" required value="<%= task.name %>">
+                        </div>
+                        <div class="mb-3">
+                            <label class="col-form-label">Descripción:</label>
+                            <textarea type="text" class="form-control input" name="description" required><%= task.description %></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn button fs-15">Agregar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
